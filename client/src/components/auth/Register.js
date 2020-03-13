@@ -1,8 +1,8 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import AlertContext from '../../context/alert/alertContext';
 import AuthContext from '../../context/auth/authContext';
 
-const Register = () => {
+const Register = props => {
   const [user, setUser] = useState({
     name: '',
     email: '',
@@ -11,14 +11,25 @@ const Register = () => {
   });
 
   const alertContext = useContext(AlertContext);
-
   const { setAlert } = alertContext;
 
   const authContext = useContext(AuthContext);
-
-  const { register } = authContext;
+  const { register, error, clearErrors, isAuthenticated } = authContext;
 
   const { name, email, password, password2 } = user;
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      props.history.push('/');
+      //ie. if the user is already authenticated, then go to the homepage
+      //this is how we redirect in react ie. using props.history
+    }
+    if (error) {
+      setAlert(error, 'danger');
+      clearErrors();
+    }
+    //eslint-disable-next-line
+  }, [error, isAuthenticated, props.history]);
 
   const onChange = e => {
     setUser({ ...user, [e.target.name]: e.target.value });

@@ -39,6 +39,7 @@ router.post(
     try {
       //checking if a user already exists with that email
       let user = await User.findOne({ email });
+
       //findOne method we can use with mongoose
       if (user) {
         return res.status(400).json({ msg: 'User already exists' });
@@ -57,7 +58,8 @@ router.post(
       user.password = await bcrypt.hash(password, salt);
 
       await user.save();
-      //res.send('user saved in db');
+
+      console.log('user saved in db');
 
       const payload = {
         user: {
